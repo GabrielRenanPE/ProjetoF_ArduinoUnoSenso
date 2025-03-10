@@ -9,6 +9,10 @@ Projeto desenvolvido para monitorar em tempo real as condições ambientais (tem
 - **Resistor de 10kΩ** – Usado no divisor de tensão junto ao LDR.
 - **Protoboard e Jumpers** – Componentes para montagem e realização das conexões do circuito.
 
+## Links dos Arquivos
+- **Código Python:** [ProgramaPython](https://github.com/GabrielRenanPE/ProjetoF_ArduinoUnoSenso/blob/main/ProgramaPython)
+- **Código Arduino:** [CodigoArduino](https://github.com/GabrielRenanPE/ProjetoF_ArduinoUnoSenso/blob/main/CodigoArduino)
+
 ## Descrição do Projeto
 Esta estação de monitoramento foi criada com o objetivo de:
 - Capturar e monitorar em tempo real os dados de **temperatura**, **umidade** e **luminosidade**.
@@ -17,21 +21,59 @@ Esta estação de monitoramento foi criada com o objetivo de:
 
 O projeto pode ser adaptado para diversas aplicações, como monitoramento de estufas, laboratórios ou ambientes residenciais, contribuindo para a análise e controle das condições ambientais.
 
-## Funcionalidades
-- **Leitura dos Sensores:** Coleta contínua dos dados do DHT11 e LDR.
-- **Registro em Banco de Dados:** Armazenamento das medições para análise histórica e geração de gráficos.
-- **Monitoramento em Tempo Real:** Atualização imediata dos dados medidos, possibilitando o acompanhamento ao vivo das condições ambientais.
+## Instruções de Uso
 
-## Esquema de Conexões
+### Instalação de Dependências
 
-### Conexões do DHT11:
-- **VCC:** Conectar ao pino de 5V do Arduino.
-- **GND:** Conectar ao GND do Arduino.
-- **Data:** Conectar a um pino digital (configurável via código).
+bash
+Copy
+pip install pyserial
+Executar o Sistema:
 
-### Conexões do LDR:
-- **LDR e Resistor de 10kΩ:** Montados em um divisor de tensão.
-  - Conectar uma extremidade do LDR aos 5V.
-  - Conectar a outra extremidade do LDR à entrada analógica do Arduino através do resistor de 10kΩ.
-  - O outro terminal do resistor deve ser conectado ao GND.
-  
+Conecte o Arduino
+
+Execute o script Python
+
+Os dados serão armazenados em:
+
+Banco de dados: sensor_data.db
+
+Configurações: sensor_config.json
+
+Visualizar Dados:
+Use o DB Browser for SQLite ou execute:
+
+python
+Copy
+import sqlite3
+
+con = sqlite3.connect('sensor_data.db')
+cur = con.cursor()
+cur.execute("SELECT * FROM leituras")
+for linha in cur.fetchall():
+    print(linha)
+con.close()
+Principais Melhorias:
+Sistema Modular:
+
+Classes separadas para gestão de dados e comunicação serial
+
+Tratamento de erros robusto
+
+Persistência de Dados:
+
+Configurações mantidas entre reinicializações
+
+Histórico completo de leituras
+
+Protocolo de Comunicação:
+
+Identificadores claros (DATA,, CONFIG_LUM:, ARDUINO_STARTED)
+
+Sincronização automática de configurações
+
+Interface de Log:
+
+Mensagens explicativas no console
+
+Timestamps precisos nos registros
