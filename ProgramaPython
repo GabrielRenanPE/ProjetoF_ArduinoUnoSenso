@@ -6,7 +6,7 @@ from datetime import datetime
 # Configurações
 CONFIG_FILE = 'sensor_config.json'
 DATABASE_FILE = 'sensor_data.db'
-SERIAL_PORT = 'COM3'  # Altere para sua porta
+SERIAL_PORT = 'COM7'  # Altere para sua porta
 BAUD_RATE = 9600
 
 class GerenciadorDados:
@@ -31,7 +31,7 @@ class GerenciadorDados:
             with open(CONFIG_FILE, 'r') as f:
                 self.config = json.load(f)
         except FileNotFoundError:
-            self.config = {'limite_luminosidade': 200}
+            self.config = {'limite_luminosidade': 1000}
             self.salvar_config()
 
     def salvar_config(self):
@@ -88,15 +88,26 @@ class InterfaceSerial:
     def processar_leituras(self, linha):
         partes = linha.split(',')
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        temperatura = float(partes[1])  # Temperatura
+        umidade = float(partes[2])      # Umidade
+        luminosidade = int(partes[3])   # Luminosidade
+        limite = int(partes[4])         # Limite
+
         dados = (
             timestamp,
-            float(partes[1]),  # Temperatura
-            float(partes[2]),  # Umidade
-            int(partes[3]),    # Luminosidade
-            int(partes[4])     # Limite
+            temperatura,
+            umidade,
+            luminosidade,
+            limite
         )
         self.gerenciador.salvar_dados(dados)
-        print(f"Dados salvos: {timestamp}")
+    
+        # Determinar o status com base nos dados recebidos
+        status = "ALERTA: Luz acima do limite!" if luminosidade > limite else "STATUS: Luz dentro do normal"
+    
+        # Saída formatada
+        print(f"Temperatura: {temperatura:.2f} °C\t| Umidade: {umidade:.2f} %\t| Luminosidade: {luminosidade}\t| Limite: {limite}")
+        print(f"Status: {status}\n")
 
     def sair(self):
         self.ser.close()
