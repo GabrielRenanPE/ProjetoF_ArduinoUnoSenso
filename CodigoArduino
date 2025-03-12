@@ -1,3 +1,4 @@
+// DHT.h biblioteca para funcionamento do DHT11 - Library used on Arduino IDE:https://github.com/adafruit/DHT-sensor-library
 #include <DHT.h>
 
 #define DHTPIN 2
@@ -41,7 +42,7 @@ void loop() {
     return;
   }
 
-  // Envia dados formatados para o computador
+  // Envia dados
   Serial.print("DATA,");
   Serial.print(temperatura);
   Serial.print(",");
